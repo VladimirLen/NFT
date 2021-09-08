@@ -8,7 +8,7 @@ compiler:
       - '@chainlink=smartcontractkit/chainlink-brownie-contracts@1.0.2'
 wallets:
     from_key: ${PRIVATE_KEY}
-    from_mnemonic: ${MNEMONIC}
+    web3_infura_project_id: ${WEB3_INFURA_PROJECT_ID}
 networks:
   default: development
   rinkeby:

@@ -1,11 +1,9 @@
-pragma solidity ^0.8.0;
+pragma solidity ^0.6.0;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@chainlink/contracts/src/v0.6/VRFConsumerBase.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract EliteNagGang is ERC721, Ownable, PaymentSplitter {
-    using SafeMath for uint256;
-
+contract EliteNagGang is ERC721, Ownable {
     mapping(uint => address) public collectsOwner;
     mapping(address => uint) public collectsOwnerById;
     uint256 private _reserved = 100;
@@ -20,13 +18,12 @@ contract EliteNagGang is ERC721, Ownable, PaymentSplitter {
 
     constructor(string memory baseURI, address _VRFCoordinator, address _LinkToken, bytes32 _keyhash)
     public
-    VRFConsumerBase(_VRFCoordinator, _LinkToken) 
     ERC721("Elite Nag Gang", "ELITENAGGANG")  {
         setBaseURI(baseURI);
     }
 
     function addCounterCollect(uint num) private {
-        return _counterCollect = _counterCollect.add(num);
+        _counterCollect += num;
     }
 
     function getCounterCollect() public view returns(uint256){
@@ -41,17 +38,13 @@ contract EliteNagGang is ERC721, Ownable, PaymentSplitter {
         return _price;
     }
 
-    function getBaseURI() public view virtual override onlyOwner returns (string memory) {
-        return baseURI();
-    }
-
     function setBaseURI(string memory baseURI) public onlyOwner {
         _setBaseURI(baseURI);
     }
 
-    function createCollectible() public onlyOwner returns(uint) {
-        uint memory tokenId = getCounterCollect()
-        _safeMint(msg.sender, tokenId);
+    function createCollectible() public onlyOwner returns(uint256) {
+        uint256 tokenId = getCounterCollect();
+        _safeMint(msg.sender, getCounterCollect());
         addCounterCollect(1);
         return tokenId;
     }
@@ -77,7 +70,7 @@ contract EliteNagGang is ERC721, Ownable, PaymentSplitter {
         
         for(uint256 i = 0; i < num; i++) {
             //радомное не повторяющиеся значение от 0 до 10000
-            uint memory randoTokenId = 0
+            uint randoTokenId = 0;
             _safeMint( msg.sender, randoTokenId);
             // approve(to, tokenId);
             // safeTransferFrom(from, to, randoTokenId);

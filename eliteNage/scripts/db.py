@@ -12,3 +12,6 @@ def insertMetadataIfNotExist(data):
     exist = db.metadata.find_one({'tokenId': data['tokenId']})
     if exist == None:
         db.metadata.insert_one(data)
+
+def getMetadata(tokenId):
+    return db.metadata.find_one({'tokenId': tokenId})

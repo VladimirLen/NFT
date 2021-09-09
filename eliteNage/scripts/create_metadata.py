@@ -5,7 +5,7 @@ import json
 from brownie import EliteNagGang, network
 from metadata import sample_metadata
 from pathlib import Path
-import db
+from scripts import db
 
 def main():
     print("Working on " + network.show_active())
@@ -15,7 +15,7 @@ def main():
         "The number of tokens you've deployed is: "
         + str(number_of_elitenaggang_collectible)
     )
-    write_metadata(number_of_elitenaggang_collectible, advanced_collectible)
+    write_metadata(number_of_elitenaggang_collectible, elitenaggang_collectible)
 
 
 def write_metadata(token_ids, nft_contract):
@@ -37,9 +37,7 @@ def write_metadata(token_ids, nft_contract):
             )
         else:
             print("Creating Metadata file: " + metadata_file_name)
-            collectible_metadata["name"] = get_breed(
-                nft_contract.tokenIdToBreed(token_id)
-            )
+            collectible_metadata["name"] = 'collect_' + token_id_str
             collectible_metadata["description"] = "An adorable {} pup!".format(
                 collectible_metadata["name"]
             )
@@ -54,7 +52,7 @@ def write_metadata(token_ids, nft_contract):
             metadata_url = None
             if os.getenv("UPLOAD_IPFS") == "true":
                 metadata_url = upload_to_ipfs(metadata_file_name)
-            insertMetadataIfNotExist({'tokenId': token_id, 'metadata': collectible_metadata, 'imgUrl': image_to_upload, 'metadata_url': metadata_url})
+            db.insertMetadataIfNotExist({'tokenId': token_id, 'metadata': collectible_metadata, 'imgUrl': image_to_upload, 'metadata_url': metadata_url})
 
 def upload_to_ipfs(filepath):
     with Path(filepath).open("rb") as fp:
